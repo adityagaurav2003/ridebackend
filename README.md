@@ -1,206 +1,117 @@
-🚕 Scalable Ride-Sharing Backend with Microservices
+# 🚕 Scalable Ride-Sharing Backend with Microservices
 
-This project is a scalable and modular backend system for a **ride-sharing service**. It’s designed with **microservices architecture**, real-time communication, and robust load balancing to ensure high availability and flexibility.
-
----
-
-🌟 Objective  
-To build a reliable and scalable backend for ride-sharing that can handle growing user demand, efficiently manage rides, and support real-time interactions.
+A robust backend for a ride-sharing service, designed with microservices, real-time communication, and dynamic load balancing.
 
 ---
 
-🌟 Key Features  
-✅ **Microservices Architecture** – The backend is divided into separate services for:
-- **User Management** – Handles user registration, authentication, and profiles.  
-- **Ride Management** – Manages ride creation, updates, and tracking.  
-- **Notifications** – Sends real-time updates to users and drivers.
-
-✅ **Asynchronous Communication** – Utilizes **RabbitMQ** for efficient message queuing and inter-service communication, improving scalability and reducing bottlenecks.
-
-✅ **Load Balancing** – Dynamic load balancing ensures consistent performance and availability, even during high-traffic periods.
+## 🌟 Objective  
+Build a **scalable** and **modular** backend system to support high user demand, efficient ride management, and real-time updates.
 
 ---
 
-⚙️ Tech Stack  
-- **Express.js** – Fast and flexible web server framework.  
-- **Node.js** – JavaScript runtime environment powering the backend logic.  
-- **MongoDB** – NoSQL database for storing user and ride data.  
-- **RabbitMQ** – Message broker for handling asynchronous tasks and communication.  
-- **JWT (JSON Web Tokens)** – Secure authentication and authorization for users and drivers.
+## 🌟 Key Features  
+✅ **Microservices Architecture** – Independent services for user, ride, and captain management.  
+✅ **Asynchronous Communication** – Uses RabbitMQ for reliable, decoupled service communication.  
+✅ **Load Balancing** – Ensures high performance and availability.  
+✅ **Authentication** – Secured with JWT tokens.  
+✅ **MongoDB** – Data storage for users, rides, and captains.
 
 ---
 
-💻 How to Run Locally  
+## ⚙️ Tech Stack  
+- **Node.js** + **Express.js** – Server-side logic and APIs.  
+- **MongoDB** – Database for storing and managing data.  
+- **RabbitMQ** – Message broker for asynchronous communication.  
+- **JWT** – Secure user and captain authentication.
 
-➡️ **Step 1:**  
-Open multiple terminal windows and navigate to each service’s folder:  
+---
+
+## 🚀 How to Run Locally  
+
+1️⃣ **Start Each Microservice**  
+Open separate terminal windows for each service:  
 ```bash
-cd user
-npx nodemon index.js
-cd ../captain
-npx nodemon index.js
-cd ../ride
-npx nodemon index.js
-cd ../notifications
-npx nodemon index.js
-➡️ Step 2:
-Connect to MongoDB on port 27017 using MongoDB Compass.
+cd user && npx nodemon index.js  
+cd captain && npx nodemon index.js  
+cd ride && npx nodemon index.js  
+cd gateway && npx nodemon index.js  
+2️⃣ Connect to MongoDB
+Use MongoDB Compass or another client to connect to the default port:
 
-➡️ Step 3:
-Connect to RabbitMQ using CloudAMQP (or any RabbitMQ host).
 
-🔧 Usage API Steps
+mongodb://localhost:27017
+3️⃣ Connect to RabbitMQ
+Use CloudAMQP or a local RabbitMQ instance for messaging.
 
-✅ User Flow:
-1️⃣ Register User
+🧪 API Usage
+🟡 User Flow
 
-bash
-Copy
-Edit
-POST http://localhost:3000/user/register  
-BODY:  
-{
-  "name": "aditya-user",
-  "email": "aditya-email",
-  "password": "aditya-password"
-}
-2️⃣ Login User
+Register
+POST /user/register
+{ "name": "aditya-user", "email": "aditya-email", "password": "aditya-password" }
 
-bash
-Copy
-Edit
-POST http://localhost:3000/user/login  
-BODY:  
-{
-  "email": "aditya-email",
-  "password": "aditya-password"
-}
-💡 Copy the returned token.
 
-3️⃣ Get User Profile
+Login
+POST /user/login
+{ "email": "aditya-email", "password": "aditya-password" }
+Copy the JWT token from the response.
 
-sql
-Copy
-Edit
-GET http://localhost:3000/user/profle  
-HEADERS:  
-Authorization: Bearer <token>
-4️⃣ Logout User
+Profile
+GET /user/profle
+Header: Authorization: Bearer <token>
 
-sql
-Copy
-Edit
-GET http://localhost:3000/user/logout  
-HEADERS:  
-Authorization: Bearer <token>
-✅ Captain Flow:
-5️⃣ Register Captain
+Logout
+GET /user/logout
+Header: Authorization: Bearer <token>
 
-bash
-Copy
-Edit
-POST http://localhost:3000/captain/register  
-BODY:  
-{
-  "name": "aditya-captain",
-  "email": "aditya-email-captain",
-  "password": "aditya-password-captain"
-}
-6️⃣ Login Captain
+🟠 Captain Flow
+Register
+POST /captain/register
+{ "name": "aditya-captain", "email": "aditya-email-captain", "password": "aditya-password-captain" }
 
-bash
-Copy
-Edit
-POST http://localhost:3000/captain/login  
-BODY:  
-{
-  "email": "aditya-email-captain",
-  "password": "aditya-password-captain"
-}
-💡 Copy the returned token.
+Login
+POST /captain/login
+{ "email": "aditya-email-captain", "password": "aditya-password-captain" }
+Copy the JWT token.
 
-7️⃣ Get Captain Profile
+Profile
+GET /captain/profle
+Header: Authorization: Bearer <token>
 
-bash
-Copy
-Edit
-GET http://localhost:3000/captain/profle  
-HEADERS:  
-Authorization: Bearer <token>
-8️⃣ Toggle Captain Availability
+Toggle Availability
+PATCH /captain/toggle-availability
+Header: Authorization: Bearer <token>
 
-bash
-Copy
-Edit
-PATCH http://localhost:3000/captain/toggle-availability  
-HEADERS:  
-Authorization: Bearer <token>
-✅ Ride Flow:
-9️⃣ Create Ride
+🟢 Ride Flow
+Create Ride (User)
+POST /ride/create-ride
+{ "pickup": "jss", "destination": "airport" }
+Header: Authorization: Bearer <user_token>
 
-makefile
-Copy
-Edit
-POST http://localhost:3000/ride/create-ride  
-BODY:  
-{
-  "pickup": "jss",
-  "destination": "airport"
-}
-HEADERS:  
-Authorization: Bearer <user_token>
-🔄 Get New Rides (Captain)
+Get New Rides (Captain)
+GET /captain/new-ride
+Header: Authorization: Bearer <captain_token>
 
-sql
-Copy
-Edit
-GET http://localhost:3000/captain/new-ride  
-HEADERS:  
-Authorization: Bearer <captain_token>
-💡 Repeat Step 9 to create more rides.
+Accept Ride (Captain)
+PUT /ride/accept-ride?rideid=<id>
+Header: Authorization: Bearer <captain_token>
 
-🔄 Accept Ride (Captain)
+Get Accepted Ride (User)
+GET /user/accepted-ride
+Header: Authorization: Bearer <user_token>
 
-bash
-Copy
-Edit
-PUT http://localhost:3000/ride/accept-ride?rideid=<id>  
-HEADERS:  
-Authorization: Bearer <captain_token>
-🔄 Get Accepted Ride (User)
+🔄 Overall Flow
+User logs in & creates a ride.
 
-sql
-Copy
-Edit
-GET http://localhost:3000/user/accepted-ride  
-HEADERS:  
-Authorization: Bearer <user_token>
-🎯 Overall Flow Summary:
+Captain logs in & sees available rides.
 
-Login as user
+Captain accepts a ride.
 
-Login as captain
+User sees the accepted ride status.
 
-Create new rides
+🚨 Security & Deployment
+✅ Use environment variables for sensitive data (MongoDB URI, JWT secret, RabbitMQ URI).
+✅ Add authentication & rate limiting in production.
+✅ Consider Docker Compose for orchestration and deployment.
 
-Captain sees new rides and accepts
-
-User can see the accepted ride status
-
-🚨 Security & Deployment Notes
-✅ Use environment variables for sensitive data (MongoDB URI, JWT secrets, RabbitMQ URI).
-✅ Add authentication and rate limiting for production environments.
-✅ Consider Docker and Docker Compose for consistent deployments across all services.
-
-✨ Scalable, real-time ride-sharing backend ready to grow!
-Built with ❤️ by [yourusername].
-
-sql
-Copy
-Edit
-
-✅ Save as `README.md`, commit and push:  
-```bash
-git add README.md
-git commit -m "Add final README with detailed explanation and API usage steps"
-git push
+✨ Scalable, real-time backend to power modern ride-sharing applications.
